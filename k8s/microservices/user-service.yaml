@@ -18,7 +18,7 @@ spec:
           image: ultrahpm/user-service:latest
           imagePullPolicy: Never
           ports:
-            - containerPort: 8084
+            - containerPort: 8201
           env:
             - name: SPRING_CONFIG_IMPORT
               value: "optional:configserver:http://config-server:8888"
@@ -26,6 +26,18 @@ spec:
               value: "http://eureka:8761/eureka/"
             - name: SPRING_THREADS_VIRTUAL_ENABLED
               value: "true"
+            - name: DB_USERNAME
+              value: "ultrahpm_user"
+            - name: DB_PASSWORD
+              value: "ultrahpm_password"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/ultrahpm_user"
+            - name: SPRING_R2DBC_URL
+              value: "r2dbc:postgresql://postgres:5432/ultrahpm_user"
+            - name: REDIS_HOST
+              value: "redis"
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:9092"
 ---
 apiVersion: v1
 kind: Service
@@ -36,5 +48,5 @@ spec:
     app: user-service
   ports:
     - protocol: TCP
-      port: 8084
-      targetPort: 8084
+      port: 8201
+      targetPort: 8201
