@@ -22,3 +22,11 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['payment-service:8204']
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['notification-service:8205']
+  - job_name: 'recommendation-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['recommendation-service:8206']
