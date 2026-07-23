@@ -25,6 +25,12 @@ spec:
               value: "optional:configserver:http://config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka:8761/eureka/"
+            - name: DB_USERNAME
+              value: "ultrahpm_user"
+            - name: DB_PASSWORD
+              value: "ultrahpm_password"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/ultrahpm_product"
 ---
 apiVersion: v1
 kind: Service

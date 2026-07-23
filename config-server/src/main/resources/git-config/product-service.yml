@@ -24,9 +24,13 @@ spring:
       idle-timeout: 300000
       max-lifetime: 600000
 
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:
