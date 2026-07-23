@@ -1,4 +1,4 @@
-package com.ultrahpm.orderservice.exception;
+package com.ultrahpm.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of(
                         "error", "Bad Request",
+                        "message", ex.getMessage() != null ? ex.getMessage() : "Invalid arguments provided"
+                ));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "error", "Not Found",
                         "message", ex.getMessage()
                 ));
     }
@@ -24,7 +33,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of(
                         "error", "Internal Server Error",
-                        "message", ex.getMessage()
+                        "message", ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred"
                 ));
     }
 }
