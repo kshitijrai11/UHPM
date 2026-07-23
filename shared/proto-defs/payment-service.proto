@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package com.ultrahpm.paymentservice.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.ultrahpm.paymentservice.grpc";
+option java_outer_classname = "PaymentServiceProto";
+
+// ============================================================
+// Payment Service gRPC API
+// Used by: order-service (SAGA Step 2: ProcessPayment / Refund)
+// Per Docs V2 §2: gRPC is the standard for inter-service RPC.
+// Per Docs V2 §7: SAGA compensation calls refund on failure.
+// ============================================================
+
+service PaymentGrpcService {
+    // Process a payment for an order
+    rpc ProcessPayment(ProcessPaymentRequest) returns (PaymentResponse);
+
+    // Refund a payment (SAGA compensation)
+    rpc RefundPayment(RefundPaymentRequest) returns (PaymentResponse);
+
+    // Get payment details
+    rpc GetPayment(GetPaymentRequest) returns (PaymentResponse);
+
+    // Get payment by order ID
+    rpc GetPaymentByOrder(GetPaymentByOrderRequest) returns (PaymentResponse);
+}
+
+// --- Request Messages ---
+
+message ProcessPaymentRequest {
+    int64 order_id = 1;
+    int64 user_id = 2;
+    double amount = 3;
+    string currency = 4;
+    string gateway = 5;       // STRIPE, PAYPAL, RAZORPAY, INTERNAL
+    string saga_id = 6;
+}
+
+message RefundPaymentRequest {
+    int64 payment_id = 1;
+    string reason = 2;
+}
+
+message GetPaymentRequest {
+    int64 payment_id = 1;
+}
+
+message GetPaymentByOrderRequest {
+    int64 order_id = 1;
+}
+
+// --- Response Messages ---
+
+message PaymentResponse {
+    int64 id = 1;
+    int64 order_id = 2;
+    int64 user_id = 3;
+    double amount = 4;
+    string currency = 5;
+    string status = 6;          // INITIATED, PROCESSING, COMPLETED, FAILED, REFUNDED
+    string gateway = 7;
+    string transaction_ref = 8;
+    string saga_id = 9;
+    string created_at = 10;
+}

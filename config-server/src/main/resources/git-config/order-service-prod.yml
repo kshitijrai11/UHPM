@@ -1,0 +1,41 @@
+# Order Service - Production Profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:postgresql://prod-db:5432/ultrahpm_order
+    hikari:
+      maximum-pool-size: 100
+      minimum-idle: 20
+
+  r2dbc:
+    url: r2dbc:postgresql://prod-db:5432/ultrahpm_order
+    pool:
+      initial-size: 25
+      max-size: 200
+
+  redis:
+    host: prod-redis
+    lettuce:
+      pool:
+        max-active: 50
+        max-idle: 20
+
+  kafka:
+    bootstrap-servers: prod-kafka-1:9092,prod-kafka-2:9092,prod-kafka-3:9092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://prod-eureka-1:8761/eureka/,http://prod-eureka-2:8761/eureka/
+
+logging:
+  level:
+    com.ultrahpm.order: WARN
+    root: WARN
+
+app:
+  saga:
+    timeout: 15000

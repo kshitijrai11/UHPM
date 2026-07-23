@@ -1,0 +1,31 @@
+chaos:
+  monkey:
+    enabled: true
+    assaults:
+      # Inject latency for 33% of requests
+      level: 3
+      latencyRangeStart: 1000 # 1 second
+      latencyRangeEnd: 3000   # 3 seconds
+      latencyActive: true
+      
+      # Throw exceptions for 10% of requests
+      exceptionsActive: true
+      exception:
+        type: java.lang.RuntimeException
+        
+      killApplicationActive: false
+    watcher:
+      # Watch @RestController and @Service
+      restController: true
+      service: true
+      component: true
+      repository: false
+
+management:
+  endpoint:
+    chaosmonkey:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: chaosmonkey

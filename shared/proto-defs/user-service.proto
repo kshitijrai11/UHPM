@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package com.ultrahpm.userservice.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.ultrahpm.userservice.grpc";
+option java_outer_classname = "UserServiceProto";
+
+// ============================================================
+// User Service gRPC API
+// Used by: order-service (validate user), recommendation-service
+//          (fetch user preferences for ML feature engineering)
+// Per Docs V2 §2: gRPC is the standard for inter-service RPC.
+// ============================================================
+
+service UserGrpcService {
+    // Get a single user by ID
+    rpc GetUser(GetUserRequest) returns (UserResponse);
+
+    // Get multiple users by IDs (batch)
+    rpc GetUsersByIds(GetUsersRequest) returns (GetUsersResponse);
+
+    // Validate user exists and is active (used by order-service before SAGA)
+    rpc ValidateUser(ValidateUserRequest) returns (ValidateUserResponse);
+}
+
+// --- Request Messages ---
+
+message GetUserRequest {
+    int64 user_id = 1;
+}
+
+message GetUsersRequest {
+    repeated int64 user_ids = 1;
+}
+
+message ValidateUserRequest {
+    int64 user_id = 1;
+}
+
+// --- Response Messages ---
+
+message UserAddressGrpc {
+    int64 id = 1;
+    string label = 2;
+    string street = 3;
+    string city = 4;
+    string state = 5;
+    string zip_code = 6;
+    string country = 7;
+    bool is_default = 8;
+}
+
+message UserResponse {
+    int64 id = 1;
+    string email = 2;
+    string username = 3;
+    string first_name = 4;
+    string last_name = 5;
+    string phone = 6;
+    string keycloak_id = 7;
+    bool active = 8;
+    repeated UserAddressGrpc addresses = 9;
+}
+
+message GetUsersResponse {
+    repeated UserResponse users = 1;
+}
+
+message ValidateUserResponse {
+    bool valid = 1;
+    string reason = 2;   // e.g., "User is deactivated" or empty if valid
+}

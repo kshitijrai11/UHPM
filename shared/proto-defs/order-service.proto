@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package com.ultrahpm.orderservice.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.ultrahpm.orderservice.grpc";
+option java_outer_classname = "OrderServiceProto";
+
+// ============================================================
+// Order Service gRPC API
+// Used by: api-gateway (order status polling), notification-service
+// Per Docs V2 §2: gRPC is the standard for inter-service RPC.
+// ============================================================
+
+service OrderGrpcService {
+    // Get a single order by ID
+    rpc GetOrder(GetOrderRequest) returns (OrderResponse);
+
+    // Get all orders for a user
+    rpc GetOrdersByUser(GetOrdersByUserRequest) returns (GetOrdersResponse);
+
+    // Cancel an order (triggers SAGA compensation)
+    rpc CancelOrder(CancelOrderRequest) returns (OrderResponse);
+}
+
+// --- Request Messages ---
+
+message GetOrderRequest {
+    int64 order_id = 1;
+}
+
+message GetOrdersByUserRequest {
+    int64 user_id = 1;
+}
+
+message CancelOrderRequest {
+    int64 order_id = 1;
+    string reason = 2;
+}
+
+// --- Response Messages ---
+
+message OrderItemGrpc {
+    int64 product_id = 1;
+    string product_name = 2;
+    int32 quantity = 3;
+    double unit_price = 4;
+}
+
+message OrderResponse {
+    int64 id = 1;
+    int64 user_id = 2;
+    string status = 3;
+    double total_amount = 4;
+    string currency = 5;
+    string saga_id = 6;
+    string shipping_address = 7;
+    repeated OrderItemGrpc items = 8;
+    string created_at = 9;
+}
+
+message GetOrdersResponse {
+    repeated OrderResponse orders = 1;
+}

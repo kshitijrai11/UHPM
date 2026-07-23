@@ -1,0 +1,80 @@
+# Notification Service - Default Configuration
+server:
+  port: 8205
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ultrahpm_notification
+    username: ${DB_USERNAME:ultrahpm}
+    password: ${DB_PASSWORD:password}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 20000
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/ultrahpm_notification
+    username: ${DB_USERNAME:ultrahpm}
+    password: ${DB_PASSWORD:password}
+    pool:
+      initial-size: 10
+      max-size: 50
+      max-idle-time: 30m
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    timeout: 2000ms
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+    consumer:
+      group-id: notification-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+  mail:
+    host: ${SMTP_HOST:smtp.mailtrap.io}
+    port: ${SMTP_PORT:2525}
+    username: ${SMTP_USERNAME:user}
+    password: ${SMTP_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      version: ${app.version:1.0.0}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    com.ultrahpm.notification: INFO
+
+app:
+  notification:
+    retry:
+      max-attempts: 3
+      backoff-multiplier: 2

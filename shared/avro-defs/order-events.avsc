@@ -1,0 +1,74 @@
+{
+  "namespace": "com.ultrahpm.events",
+  "type": "record",
+  "name": "OrderEvent",
+  "doc": "Represents an order lifecycle event. Published by order-service, consumed by notification-service and recommendation-service.",
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "string",
+      "doc": "UUID for idempotent processing"
+    },
+    {
+      "name": "orderId",
+      "type": "long",
+      "doc": "The unique order identifier"
+    },
+    {
+      "name": "userId",
+      "type": "long",
+      "doc": "The user who placed the order"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "OrderStatus",
+        "symbols": ["CREATED", "PENDING_PAYMENT", "PAID", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"]
+      },
+      "doc": "Current order status"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "OrderItem",
+          "fields": [
+            {"name": "productId", "type": "long"},
+            {"name": "productName", "type": "string"},
+            {"name": "quantity", "type": "int"},
+            {"name": "unitPrice", "type": {"type": "bytes", "logicalType": "decimal", "precision": 10, "scale": 2}}
+          ]
+        }
+      },
+      "doc": "Line items in the order"
+    },
+    {
+      "name": "totalAmount",
+      "type": {"type": "bytes", "logicalType": "decimal", "precision": 12, "scale": 2},
+      "doc": "Total order value"
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "USD",
+      "doc": "ISO 4217 currency code"
+    },
+    {
+      "name": "sagaId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "SAGA correlation ID for distributed transaction tracking"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Epoch milliseconds when the event was emitted"
+    }
+  ]
+}

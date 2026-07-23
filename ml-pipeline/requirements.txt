@@ -1,0 +1,13 @@
+torch==2.2.1
+torchvision==0.17.1
+torchaudio==2.2.1
+numpy<2.0
+pandas
+scikit-learn
+psycopg2-binary
+mlflow
+onnx
+onnxruntime
+sqlalchemy
+python-dotenv
+pytest

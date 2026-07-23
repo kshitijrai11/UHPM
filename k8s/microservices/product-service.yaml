@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: product-service
+          image: ultrahpm/product-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+            - containerPort: 9090 # gRPC port
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:configserver:http://config-server:8888"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka:8761/eureka/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  selector:
+    app: product-service
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+    - name: grpc
+      protocol: TCP
+      port: 9090
+      targetPort: 9090

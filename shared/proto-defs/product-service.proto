@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package com.ultrahpm.productservice.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.ultrahpm.productservice.grpc";
+option java_outer_classname = "ProductServiceProto";
+
+service ProductGrpcService {
+    rpc GetProductsByIds(GetProductsRequest) returns (GetProductsResponse);
+}
+
+message GetProductsRequest {
+    repeated string product_ids = 1;
+}
+
+message ProductGrpc {
+    string id = 1;
+    string name = 2;
+    string category = 3;
+    double price = 4;
+    int32 stock_quantity = 5;
+    string image_url = 6;
+}
+
+message GetProductsResponse {
+    repeated ProductGrpc products = 1;
+}

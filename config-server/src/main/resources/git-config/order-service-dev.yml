@@ -1,0 +1,16 @@
+# Order Service - Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    com.ultrahpm.order: DEBUG
+    org.springframework.r2dbc: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

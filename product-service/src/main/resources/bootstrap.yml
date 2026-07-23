@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: product-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888}
+      username: ${CONFIG_SERVER_USERNAME:config}
+      password: ${CONFIG_SERVER_PASSWORD:ultra2025}
+      fail-fast: true
+      retry:
+        initial-interval: 2000
+        max-interval: 10000
+        max-attempts: 5

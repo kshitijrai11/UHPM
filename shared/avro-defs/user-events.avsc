@@ -1,0 +1,55 @@
+{
+  "namespace": "com.ultrahpm.events",
+  "type": "record",
+  "name": "UserEvent",
+  "doc": "Represents a user interaction event streamed via Kafka. Used by the recommendation-service for ML model training and real-time inference.",
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "string",
+      "doc": "UUID for idempotent processing"
+    },
+    {
+      "name": "userId",
+      "type": "long",
+      "doc": "The ID of the user performing the action"
+    },
+    {
+      "name": "productId",
+      "type": "long",
+      "doc": "The ID of the product being interacted with"
+    },
+    {
+      "name": "eventType",
+      "type": {
+        "type": "enum",
+        "name": "UserEventType",
+        "symbols": ["VIEW", "CLICK", "ADD_TO_CART", "PURCHASE", "SEARCH", "WISHLIST"]
+      },
+      "doc": "The type of user interaction"
+    },
+    {
+      "name": "sessionId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Optional browser/app session identifier for session-based recommendations"
+    },
+    {
+      "name": "metadata",
+      "type": ["null", {
+        "type": "map",
+        "values": "string"
+      }],
+      "default": null,
+      "doc": "Optional key-value metadata (e.g., search query, referrer, device type)"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Epoch milliseconds when the event occurred"
+    }
+  ]
+}

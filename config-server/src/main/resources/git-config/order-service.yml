@@ -1,0 +1,79 @@
+# Order Service - Default Configuration
+server:
+  port: 8203
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ultrahpm_order
+    username: ${DB_USERNAME:ultrahpm}
+    password: ${DB_PASSWORD:password}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 20000
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/ultrahpm_order
+    username: ${DB_USERNAME:ultrahpm}
+    password: ${DB_PASSWORD:password}
+    pool:
+      initial-size: 10
+      max-size: 50
+      max-idle-time: 30m
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 8
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+    consumer:
+      group-id: order-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      version: ${app.version:1.0.0}
+
+# gRPC server configuration
+grpc:
+  server:
+    port: 9093
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    com.ultrahpm.order: INFO
+
+app:
+  saga:
+    timeout: 30000  # 30 seconds for SAGA pattern timeout
+    retry-attempts: 3
+  order:
+    max-items: 100
+    default-page-size: 20

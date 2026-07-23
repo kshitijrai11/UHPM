@@ -1,0 +1,77 @@
+{
+  "namespace": "com.ultrahpm.events",
+  "type": "record",
+  "name": "PaymentEvent",
+  "doc": "Represents a payment lifecycle event. Published by payment-service, consumed by order-service (SAGA compensation) and notification-service.",
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "string",
+      "doc": "UUID for idempotent processing"
+    },
+    {
+      "name": "paymentId",
+      "type": "long",
+      "doc": "The unique payment identifier"
+    },
+    {
+      "name": "orderId",
+      "type": "long",
+      "doc": "The order this payment is associated with"
+    },
+    {
+      "name": "userId",
+      "type": "long",
+      "doc": "The user making the payment"
+    },
+    {
+      "name": "amount",
+      "type": {"type": "bytes", "logicalType": "decimal", "precision": 12, "scale": 2},
+      "doc": "Payment amount"
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "USD",
+      "doc": "ISO 4217 currency code"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "PaymentStatus",
+        "symbols": ["INITIATED", "PROCESSING", "COMPLETED", "FAILED", "REFUNDED"]
+      },
+      "doc": "Current payment status"
+    },
+    {
+      "name": "gateway",
+      "type": {
+        "type": "enum",
+        "name": "PaymentGateway",
+        "symbols": ["STRIPE", "PAYPAL", "RAZORPAY", "INTERNAL"]
+      },
+      "doc": "Payment gateway used"
+    },
+    {
+      "name": "transactionRef",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "External gateway transaction reference"
+    },
+    {
+      "name": "sagaId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "SAGA correlation ID for distributed transaction tracking"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Epoch milliseconds when the event was emitted"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+# Config Server Application Configuration
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native  # Use 'native' for local dev, 'git' for production
+
+  cloud:
+    config:
+      server:
+        # Native profile - serves configs from local filesystem (development)
+        native:
+          search-locations:
+            - classpath:/git-config
+            - classpath:/git-config/{application}
+
+        # Git profile - serves configs from Git repository (production)
+        git:
+          uri: https://github.com/kshitijrai11/UHPM.git
+          default-label: main
+          clone-on-start: true
+          force-pull: true
+          timeout: 10
+          search-paths:
+            - '{application}'
+            - '{application}/{profile}'
+          repos:
+            # Production repository
+            production:
+              pattern: '*-prod'
+              uri: https://github.com/kshitijrai11/UHPM.git
+              search-paths: '{application}'
+            # Development repository
+            development:
+              pattern: '*-dev,*-test'
+              uri: https://github.com/kshitijrai11/UHPM.git
+              search-paths: '{application}'
+
+        health:
+          repositories:
+            production:
+              label: main
+              name: production
+              profiles: prod
+            development:
+              label: main
+              name: development
+              profiles: dev
+
+# Security configuration
+security:
+  basic:
+    enabled: true
+  user:
+    name: ${CONFIG_SERVER_USERNAME:config}
+    password: ${CONFIG_SERVER_PASSWORD:ultra2025}
+
+# Encryption support for sensitive configuration values
+encrypt:
+  key: ${ENCRYPT_KEY:ultrahpm-secret-key}
+
+# Actuator / Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh,env,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.config: DEBUG
+    org.springframework.security: WARN
+    com.ultrahpm.configserver: INFO
+  pattern:
+    console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%t]){faint} %clr(%logger{36}){cyan} %clr(:){faint} %m%n"
