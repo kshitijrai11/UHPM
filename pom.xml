@@ -162,9 +162,10 @@
                     <version>3.2.5</version>
                     <configuration>
                         <environmentVariables>
-                            <DOCKER_HOST>unix:///var/run/docker.sock</DOCKER_HOST>
+                            <DOCKER_HOST>tcp://127.0.0.1:2375</DOCKER_HOST>
                             <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
                             <TESTCONTAINERS_CHECKS_DISABLE>true</TESTCONTAINERS_CHECKS_DISABLE>
+                            <TESTCONTAINERS_HOST_OVERRIDE>host.docker.internal</TESTCONTAINERS_HOST_OVERRIDE>
                         </environmentVariables>
                     </configuration>
                 </plugin>
