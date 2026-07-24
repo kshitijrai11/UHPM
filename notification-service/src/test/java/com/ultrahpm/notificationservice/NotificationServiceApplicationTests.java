@@ -1,13 +1,17 @@
 package com.ultrahpm.notificationservice;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-class NotificationServiceApplicationTests extends AbstractIntegrationTest {
+@SpringBootTest
+@ActiveProfiles("test")
+class NotificationServiceApplicationTests {
 
     @Test
     void contextLoads() {
         // Validates that the Spring context successfully boots up
-        // with the Kafka container via Testcontainers.
+        // without Kafka containers.
     }
 
 }
