@@ -1,0 +1,140 @@
+services:
+  # Base Infrastructure
+  config-server:
+    image: ultrahpm/config-server:latest
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+      - CONFIG_SERVER_USERNAME=config
+      - CONFIG_SERVER_PASSWORD=ultra2025
+
+  eureka-server:
+    image: ultrahpm/eureka-server:latest
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  api-gateway:
+    image: ultrahpm/api-gateway:latest
+    ports:
+      - "8200:8200"
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  user-service:
+    image: ultrahpm/user-service:latest
+    depends_on:
+      - eureka-server
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  product-service:
+    image: ultrahpm/product-service:latest
+    depends_on:
+      - eureka-server
+      - postgres
+      - redis
+      - elasticsearch
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  order-service:
+    image: ultrahpm/order-service:latest
+    depends_on:
+      - eureka-server
+      - postgres
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  payment-service:
+    image: ultrahpm/payment-service:latest
+    depends_on:
+      - eureka-server
+      - postgres
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  notification-service:
+    image: ultrahpm/notification-service:latest
+    depends_on:
+      - eureka-server
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  recommendation-service:
+    image: ultrahpm/recommendation-service:latest
+    depends_on:
+      - eureka-server
+      - elasticsearch
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  # Infrastructure Services
+  postgres:
+    image: pgvector/pgvector:pg15
+    environment:
+      POSTGRES_DB: ultrahpm
+      POSTGRES_USER: ultrahpm
+      POSTGRES_PASSWORD: ultrahpm123
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    ports:
+      - "9092:9092"
+    environment:
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,CONTROLLER://kafka:9093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning
+
+volumes:
+  grafana_data:
