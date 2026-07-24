@@ -18,6 +18,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo 'Compiling across all modules...'
+                sh 'chmod +x mvnw'
                 sh './mvnw clean compile'
             }
         }
