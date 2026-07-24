@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,14 +22,25 @@ public class DataSourceConfig {
 
     private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
 
+    @Value("${spring.datasource.url:jdbc:postgresql://localhost:5432/ultrahpm_product}")
+    private String primaryUrl;
+
+    @Value("${spring.datasource.replica.url:jdbc:postgresql://postgres-replica:5432/ultrahpm_product}")
+    private String replicaUrl;
+
+    @Value("${spring.datasource.username:ultrahpm_user}")
+    private String username;
+
+    @Value("${spring.datasource.password:ultrahpm_password}")
+    private String password;
+
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.primary")
     public DataSource primaryDataSource() {
-        // Fallback properties for local execution without config server
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:postgresql://localhost:5432/ultrahpm_product");
-        ds.setUsername("ultrahpm_user");
-        ds.setPassword("ultrahpm_password");
+        ds.setJdbcUrl(primaryUrl);
+        ds.setUsername(username);
+        ds.setPassword(password);
         return ds;
     }
 
@@ -36,9 +48,9 @@ public class DataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource.replica")
     public DataSource replicaDataSource() {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:postgresql://localhost:5433/ultrahpm_product");
-        ds.setUsername("ultrahpm_user");
-        ds.setPassword("ultrahpm_password");
+        ds.setJdbcUrl(replicaUrl);
+        ds.setUsername(username);
+        ds.setPassword(password);
         return ds;
     }
 

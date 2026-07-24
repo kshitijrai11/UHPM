@@ -15,13 +15,13 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: ultrahpm/notification-service:latest
-          imagePullPolicy: Never
+          image: ultrahpm/notification-service:v2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8205
           env:
             - name: SPRING_CONFIG_IMPORT
-              value: "optional:configserver:http://config-server:8888"
+              value: "optional:configserver:http://config:ultra2025@config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka:8761/eureka/"
             - name: SPRING_THREADS_VIRTUAL_ENABLED

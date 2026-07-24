@@ -15,17 +15,19 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: ultrahpm/order-service:latest
-          imagePullPolicy: Never
+          image: ultrahpm/order-service:v2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
           env:
             - name: SPRING_CONFIG_IMPORT
-              value: "optional:configserver:http://config-server:8888"
+              value: "optional:configserver:http://config:ultra2025@config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka:8761/eureka/"
             - name: SPRING_THREADS_VIRTUAL_ENABLED
               value: "true"
+            - name: JAVA_OPTS
+              value: "-XX:+UseZGC -XX:+ZGenerational --enable-preview"
             - name: DB_USERNAME
               value: "ultrahpm_user"
             - name: DB_PASSWORD

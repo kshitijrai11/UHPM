@@ -14,7 +14,7 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ultrahpm_product
+    url: jdbc:postgresql://postgres:5432/ultrahpm_product
     username: ${DB_USERNAME:ultrahpm}
     password: ${DB_PASSWORD:password}
     hikari:
@@ -53,7 +53,7 @@ spring:
         min-idle: 2
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -67,10 +67,24 @@ spring:
       write-dates-as-timestamps: false
     default-property-inclusion: non_null
 
+  ai:
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 384
+        initialize-schema: true
+    ollama:
+      base-url: http://ollama:11434
+      chat:
+        options:
+          model: llama3
+          temperature: 0.7
+
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_SERVER_URL:http://eureka:8761/eureka/}
   instance:
     prefer-ip-address: true
     metadata-map:
@@ -105,19 +119,4 @@ app:
   pagination:
     default-page-size: 20
     max-page-size: 100
-
-spring:
-  ai:
-    vectorstore:
-      pgvector:
-        index-type: HNSW
-        distance-type: COSINE_DISTANCE
-        dimensions: 384
-        initialize-schema: true
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        options:
-          model: llama3
-          temperature: 0.7
 

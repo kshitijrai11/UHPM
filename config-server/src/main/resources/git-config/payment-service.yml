@@ -4,7 +4,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ultrahpm_payment
+    url: jdbc:postgresql://postgres:5432/ultrahpm_payment
     username: ${DB_USERNAME:ultrahpm}
     password: ${DB_PASSWORD:password}
     hikari:
@@ -13,7 +13,7 @@ spring:
       connection-timeout: 20000
 
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/ultrahpm_payment
+    url: r2dbc:postgresql://postgres:5432/ultrahpm_payment
     username: ${DB_USERNAME:ultrahpm}
     password: ${DB_PASSWORD:password}
     pool:
@@ -31,19 +31,19 @@ spring:
     timeout: 2000ms
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       group-id: payment-service-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_SERVER_URL:http://eureka:8761/eureka/}
   instance:
     prefer-ip-address: true
     metadata-map:

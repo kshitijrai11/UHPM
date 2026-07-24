@@ -15,13 +15,13 @@ spec:
     spec:
       containers:
         - name: recommendation-service
-          image: ultrahpm/recommendation-service:latest
-          imagePullPolicy: Never
+          image: ultrahpm/recommendation-service:v2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8206
           env:
             - name: SPRING_CONFIG_IMPORT
-              value: "optional:configserver:http://config-server:8888"
+              value: "optional:configserver:http://config:ultra2025@config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka:8761/eureka/"
             - name: SPRING_THREADS_VIRTUAL_ENABLED
@@ -34,10 +34,16 @@ spec:
               value: "jdbc:postgresql://postgres:5432/ultrahpm_recommendations"
             - name: SPRING_R2DBC_URL
               value: "r2dbc:postgresql://postgres:5432/ultrahpm_recommendations"
+            - name: SPRING_R2DBC_USERNAME
+              value: "ultrahpm_user"
+            - name: SPRING_R2DBC_PASSWORD
+              value: "ultrahpm_password"
             - name: REDIS_HOST
               value: "redis"
             - name: KAFKA_BOOTSTRAP_SERVERS
               value: "kafka:9092"
+            - name: SPRING_AI_OPENAI_API_KEY
+              value: "dummy"
           volumeMounts:
             - name: onnx-models
               mountPath: /models
@@ -71,7 +77,7 @@ metadata:
   name: onnx-models-pvc
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi

@@ -3,9 +3,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-server-config
-  namespace: ultrahpm
+  
 data:
-  SPRING_PROFILES_ACTIVE: "git,prod"
+  SPRING_PROFILES_ACTIVE: "native,prod"
   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
 
 ---
@@ -13,7 +13,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: config-server-secrets
-  namespace: ultrahpm
+  
 type: Opaque
 stringData:
   CONFIG_SERVER_USERNAME: "config"
@@ -26,7 +26,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: config-server
-  namespace: ultrahpm
+  
   labels:
     app: config-server
 spec:
@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
         - name: config-server
-          image: ultrahpm/config-server:latest
+          image: ultrahpm/config-server:v2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888
@@ -95,7 +95,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: config-server
-  namespace: ultrahpm
+  
   labels:
     app: config-server
 spec:

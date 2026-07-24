@@ -15,14 +15,14 @@ spec:
     spec:
       containers:
         - name: product-service
-          image: ultrahpm/product-service:latest
-          imagePullPolicy: Never
+          image: ultrahpm/product-service:v2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
             - containerPort: 9090 # gRPC port
           env:
             - name: SPRING_CONFIG_IMPORT
-              value: "optional:configserver:http://config-server:8888"
+              value: "optional:configserver:http://config:ultra2025@config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka:8761/eureka/"
             - name: DB_USERNAME

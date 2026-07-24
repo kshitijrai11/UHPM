@@ -1,19 +1,27 @@
-FROM eclipse-temurin:21-jre-alpine
+# Stage 1: Build the application
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-# Add a non-root user
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
+# Copy all source code
+COPY . .
 
-# Copy the built jar
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+# Build the application
+RUN mvn clean package -pl config-server -am -DskipTests
 
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget -q -O - http://config:ultra2025@localhost:8888/actuator/health || exit 1
+# Stage 2: Create the runtime image
+FROM eclipse-temurin:21-jre
 
+WORKDIR /app
+
+# Copy the built jar file from the builder stage
+COPY --from=builder /app/config-server/target/config-server-*.jar app.jar
+
+# Expose HTTP port
 EXPOSE 8888
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Set environment variables for Java tuning
+ENV JAVA_OPTS="-XX:+UseZGC -XX:+ZGenerational"
+
+# Run the application
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:15
+          image: pgvector/pgvector:pg15
           env:
             - name: POSTGRES_USER
               value: ultrahpm_user
@@ -73,7 +73,7 @@ spec:
       containers:
         - name: postgres
           # In production, this would be configured to sync from primary
-          image: postgres:15
+          image: pgvector/pgvector:pg15
           env:
             - name: POSTGRES_USER
               value: ultrahpm_user

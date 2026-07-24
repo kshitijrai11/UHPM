@@ -3,7 +3,7 @@ server:
 
 spring:
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/ultrahpm_recommendations
+    url: r2dbc:postgresql://postgres:5432/ultrahpm_recommendations
     username: ultrahpm_user
     password: ultrahpm_password
     pool:
@@ -22,7 +22,7 @@ spring:
       database: 1
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: recommendation-group
       auto-offset-reset: earliest
@@ -30,6 +30,10 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+
+  ai:
+    openai:
+      api-key: dummy
 
 management:
   endpoints:

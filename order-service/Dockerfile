@@ -1,23 +1,16 @@
 # Stage 1: Build the application
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-# Copy the parent pom and the shared library
-COPY pom.xml .
-COPY shared/pom.xml shared/
-COPY shared/src shared/src/
-COPY shared/proto-defs shared/proto-defs/
-
-# Copy the order-service source code
-COPY order-service/pom.xml order-service/
-COPY order-service/src order-service/src/
+# Copy all source code
+COPY . .
 
 # Build the application
 RUN mvn clean package -pl shared,order-service -am -DskipTests
 
 # Stage 2: Create the runtime image
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 

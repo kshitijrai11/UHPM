@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Build the application
-RUN mvn clean package -pl shared,product-service -am -DskipTests
+RUN mvn clean package -pl shared,api-gateway -am -DskipTests
 
 # Stage 2: Create the runtime image
 FROM eclipse-temurin:21-jre
@@ -15,13 +15,12 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy the built jar file from the builder stage
-COPY --from=builder /app/product-service/target/product-service-*.jar app.jar
+COPY --from=builder /app/api-gateway/target/api-gateway-*.jar app.jar
 
-# Expose HTTP and gRPC ports
-EXPOSE 8081
-EXPOSE 9090
+# Expose HTTP port
+EXPOSE 8080
 
-# Set environment variables for Java tuning (optional but recommended for containers)
+# Set environment variables for Java tuning
 ENV JAVA_OPTS="-XX:+UseZGC -XX:+ZGenerational"
 
 # Run the application
