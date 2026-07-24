@@ -1,12 +1,5 @@
 pipeline {
-    agent {
-        // Run on the Jenkins master/agent node, assuming docker is available
-        docker {
-            // We use maven:3.9.6-eclipse-temurin-21 because our project requires Java 21
-            image 'maven:3.9.6-eclipse-temurin-21'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /root/.m2:/root/.m2'
-        }
-    }
+    agent any
 
     environment {
         // MAVEN_OPTS can be configured if you want special garbage collection or memory limits for builds
@@ -25,7 +18,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo 'Compiling across all modules...'
-                sh 'mvn clean compile'
+                sh './mvnw clean compile'
             }
         }
 
@@ -33,7 +26,7 @@ pipeline {
             steps {
                 echo 'Running Unit & Integration Tests (Testcontainers via Docker socket)...'
                 // This runs surefire (unit tests) and failsafe (integration tests)
-                sh 'mvn verify'
+                sh './mvnw verify'
             }
             post {
                 always {
@@ -57,7 +50,7 @@ pipeline {
             steps {
                 echo 'Packaging executable JARs...'
                 // Skip tests here since we already ran them in the previous stage
-                sh 'mvn package -DskipTests'
+                sh './mvnw package -DskipTests'
             }
         }
 
