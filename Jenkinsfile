@@ -4,6 +4,10 @@ pipeline {
     environment {
         // MAVEN_OPTS can be configured if you want special garbage collection or memory limits for builds
         MAVEN_OPTS = '-Xmx1024m'
+        // Testcontainers configuration for Jenkins DooD
+        DOCKER_HOST = 'unix:///var/run/docker.sock'
+        TESTCONTAINERS_RYUK_DISABLED = 'true'
+        TESTCONTAINERS_CHECKS_DISABLE = 'true'
     }
 
     stages {
