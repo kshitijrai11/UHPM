@@ -25,7 +25,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo 'Compiling across all modules...'
-                sh './mvnw clean compile'
+                sh 'mvn clean compile'
             }
         }
 
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 echo 'Running Unit & Integration Tests (Testcontainers via Docker socket)...'
                 // This runs surefire (unit tests) and failsafe (integration tests)
-                sh './mvnw verify'
+                sh 'mvn verify'
             }
             post {
                 always {
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 echo 'Packaging executable JARs...'
                 // Skip tests here since we already ran them in the previous stage
-                sh './mvnw package -DskipTests'
+                sh 'mvn package -DskipTests'
             }
         }
 
