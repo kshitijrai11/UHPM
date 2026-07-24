@@ -31,8 +31,8 @@ pipeline {
             post {
                 always {
                     // Record test results for Jenkins UI
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    junit '**/target/failsafe-reports/TEST-*.xml, null'
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
+                    junit allowEmptyResults: true, testResults: '**/target/failsafe-reports/TEST-*.xml'
                 }
             }
         }
