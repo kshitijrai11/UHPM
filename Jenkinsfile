@@ -63,9 +63,18 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                echo 'Building Docker images (simulated)...'
-                // Usually handled by spring-boot:build-image or kaniko/docker build
-                // sh './mvnw spring-boot:build-image -DskipTests'
+                echo 'Building Docker images...'
+                script {
+                    def services = [
+                        'api-gateway', 'config-server', 'eureka', 'notification-service', 
+                        'order-service', 'payment-service', 'product-service', 
+                        'recommendation-service', 'user-service'
+                    ]
+                    for (service in services) {
+                        echo "Building ${service}..."
+                        sh "docker build -t ultrahpm/${service}:latest -f ${service}/Dockerfile ."
+                    }
+                }
             }
         }
     }
