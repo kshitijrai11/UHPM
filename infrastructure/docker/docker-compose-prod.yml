@@ -8,6 +8,7 @@ services:
       - SPRING_PROFILES_ACTIVE=native
       - CONFIG_SERVER_USERNAME=config
       - CONFIG_SERVER_PASSWORD=ultra2025
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://config:ultra2025@localhost:8888/actuator/health || exit 1"]
       interval: 5s
@@ -22,10 +23,11 @@ services:
       config-server:
         condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   api-gateway:
     image: ultrahpm/api-gateway:latest
@@ -37,12 +39,13 @@ services:
       eureka-server:
         condition: service_started
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
       - REDIS_HOST=redis
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   user-service:
     image: ultrahpm/user-service:latest
@@ -54,12 +57,18 @@ services:
       postgres:
         condition: service_started
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm
+      - DB_USERNAME=ultrahpm
+      - DB_PASSWORD=ultrahpm123
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm_user
+      - SPRING_DATASOURCE_USERNAME=ultrahpm
+      - SPRING_DATASOURCE_PASSWORD=ultrahpm123
+      - REDIS_HOST=redis
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   product-service:
     image: ultrahpm/product-service:latest
@@ -75,14 +84,21 @@ services:
       elasticsearch:
         condition: service_started
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm
+      - DB_USERNAME=ultrahpm
+      - DB_PASSWORD=ultrahpm123
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm_product
+      - SPRING_DATASOURCE_USERNAME=ultrahpm
+      - SPRING_DATASOURCE_PASSWORD=ultrahpm123
+      - REDIS_HOST=redis
       - SPRING_REDIS_HOST=redis
       - ELASTICSEARCH_HOST=elasticsearch
+      - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   order-service:
     image: ultrahpm/order-service:latest
@@ -96,13 +112,18 @@ services:
       kafka:
         condition: service_started
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm
+      - DB_USERNAME=ultrahpm
+      - DB_PASSWORD=ultrahpm123
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm_order
+      - SPRING_DATASOURCE_USERNAME=ultrahpm
+      - SPRING_DATASOURCE_PASSWORD=ultrahpm123
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   payment-service:
     image: ultrahpm/payment-service:latest
@@ -116,13 +137,18 @@ services:
       kafka:
         condition: service_started
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm
+      - DB_USERNAME=ultrahpm
+      - DB_PASSWORD=ultrahpm123
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ultrahpm_payment
+      - SPRING_DATASOURCE_USERNAME=ultrahpm
+      - SPRING_DATASOURCE_PASSWORD=ultrahpm123
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   notification-service:
     image: ultrahpm/notification-service:latest
@@ -134,12 +160,13 @@ services:
       kafka:
         condition: service_started
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   recommendation-service:
     image: ultrahpm/recommendation-service:latest
@@ -151,12 +178,14 @@ services:
       elasticsearch:
         condition: service_started
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
       - CONFIG_SERVER_URL=http://config:ultra2025@config-server:8888
       - SPRING_CLOUD_CONFIG_USERNAME=config
       - SPRING_CLOUD_CONFIG_PASSWORD=ultra2025
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
       - ELASTICSEARCH_HOST=elasticsearch
+      - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
+      - JAVA_OPTS=--enable-preview -Xms128m -Xmx256m
 
   # Infrastructure Services
   postgres:
@@ -167,6 +196,8 @@ services:
       POSTGRES_PASSWORD: ultrahpm123
     ports:
       - "5432:5432"
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
 
   redis:
     image: redis:7-alpine
