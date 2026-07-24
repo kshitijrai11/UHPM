@@ -1,5 +1,5 @@
 global:
-  scrape_interval: 15s
+  scrape_interval: 5s
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -10,11 +10,37 @@ scrape_configs:
     static_configs:
       - targets: ['otel-collector:8889']
 
-  - job_name: 'spring-boot-services'
+  - job_name: 'api-gateway'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: 
-        - 'host.docker.internal:8081'
-        - 'host.docker.internal:8082'
-        - 'host.docker.internal:8083'
-        - 'host.docker.internal:8084'
+      - targets: ['api-gateway:8200']
+
+  - job_name: 'user-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['user-service:8201']
+
+  - job_name: 'product-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['product-service:8202']
+
+  - job_name: 'order-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['order-service:8203']
+
+  - job_name: 'payment-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['payment-service:8204']
+
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['notification-service:8205']
+
+  - job_name: 'recommendation-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['recommendation-service:8206']
