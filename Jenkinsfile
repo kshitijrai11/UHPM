@@ -59,7 +59,7 @@ pipeline {
                 echo 'Building Docker images...'
                 script {
                     def services = [
-                        'api-gateway', 'config-server', 'eureka', 'notification-service', 
+                        'api-gateway', 'config-server', 'eureka-server', 'notification-service', 
                         'order-service', 'payment-service', 'product-service', 
                         'recommendation-service', 'user-service'
                     ]
