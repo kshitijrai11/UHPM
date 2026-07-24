@@ -161,12 +161,11 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
                     <configuration>
-                        <systemPropertyVariables>
-                            <testcontainers.ryuk.disabled>true</testcontainers.ryuk.disabled>
-                            <docker.host>unix:///var/run/docker.sock</docker.host>
-                            <!-- Disable Testcontainers checks since JNA might fail in Jenkins -->
-                            <testcontainers.checks.disable>true</testcontainers.checks.disable>
-                        </systemPropertyVariables>
+                        <environmentVariables>
+                            <DOCKER_HOST>unix:///var/run/docker.sock</DOCKER_HOST>
+                            <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
+                            <TESTCONTAINERS_CHECKS_DISABLE>true</TESTCONTAINERS_CHECKS_DISABLE>
+                        </environmentVariables>
                     </configuration>
                 </plugin>
             </plugins>
