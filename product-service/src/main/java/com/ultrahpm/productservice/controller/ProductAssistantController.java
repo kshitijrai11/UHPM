@@ -1,5 +1,6 @@
-package com.ultrahpm.productservice;
+package com.ultrahpm.productservice.controller;
 
+import com.ultrahpm.productservice.service.ProductAiService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
