@@ -160,14 +160,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
-                    <configuration>
-                        <environmentVariables>
-                            <DOCKER_HOST>tcp://127.0.0.1:2375</DOCKER_HOST>
-                            <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
-                            <TESTCONTAINERS_CHECKS_DISABLE>true</TESTCONTAINERS_CHECKS_DISABLE>
-                            <TESTCONTAINERS_HOST_OVERRIDE>host.docker.internal</TESTCONTAINERS_HOST_OVERRIDE>
-                        </environmentVariables>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

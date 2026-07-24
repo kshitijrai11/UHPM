@@ -4,11 +4,6 @@ pipeline {
     environment {
         // MAVEN_OPTS can be configured if you want special garbage collection or memory limits for builds
         MAVEN_OPTS = '-Xmx1024m'
-        // Testcontainers configuration for Jenkins DooD via TCP Proxy
-        DOCKER_HOST = 'tcp://127.0.0.1:2375'
-        TESTCONTAINERS_RYUK_DISABLED = 'true'
-        TESTCONTAINERS_CHECKS_DISABLE = 'true'
-        TESTCONTAINERS_HOST_OVERRIDE = 'host.docker.internal'
     }
 
     stages {
@@ -31,18 +26,7 @@ pipeline {
         stage('Test & Analyze') {
             steps {
                 echo 'Running Unit & Integration Tests...'
-                // Start a TCP proxy to the Docker socket to bypass Java's WSL2 Unix Domain Socket bugs
-                sh '''
-                if [ ! -f socat ]; then
-                    curl -sLo socat https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat
-                    chmod +x socat
-                fi
-                # Kill any existing socat
-                pkill -f 'socat TCP-LISTEN:2375' || true
-                ./socat TCP-LISTEN:2375,fork,bind=127.0.0.1 UNIX-CONNECT:/var/run/docker.sock &
-                sleep 2
-                ./mvnw verify
-                '''
+                sh './mvnw verify'
             }
             post {
                 always {
